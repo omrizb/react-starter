@@ -4,6 +4,7 @@ export const utilService = {
     makeId,
     makeLorem,
     getRandomIntInclusive,
+    getRandomItems,
     getDayName,
     getMonthName,
     animateCSS
@@ -21,12 +22,12 @@ function makeId(length = 6) {
 }
 
 function makeLorem(size = 100) {
-    const words = ['The sky', 'above', 'the port', 'was', 'the color' ,'of nature', 'tuned', 'to', 'a live channel', 'All', 'this happened', 'more or less', 'I', 'had', 'the story', 'bit by bit', 'from various people', 'and', 'as generally', 'happens', 'in such cases', 'each time', 'it', 'was', 'a different story', 'a pleasure', 'to', 'burn']
+    const words = ['The sky', 'above', 'the port', 'was', 'the color', 'of nature', 'tuned', 'to', 'a live channel', 'All', 'this happened', 'more or less', 'I', 'had', 'the story', 'bit by bit', 'from various people', 'and', 'as generally', 'happens', 'in such cases', 'each time', 'it', 'was', 'a different story', 'a pleasure', 'to', 'burn']
     var txt = ''
     while (size > 0) {
         size--
         txt += words[Math.floor(Math.random() * words.length)]
-        if (size >= 1 ) txt += ' '
+        if (size >= 1) txt += ' '
     }
     return txt
 }
@@ -35,6 +36,20 @@ function getRandomIntInclusive(min, max) {
     min = Math.ceil(min)
     max = Math.floor(max)
     return Math.floor(Math.random() * (max - min + 1)) + min //The maximum is inclusive and the minimum is inclusive 
+}
+
+function getRandomItems(items, size = 1, duplicationAllowed = false) {
+    if (size > items.length && !duplicationAllowed) return
+
+    const res = []
+    const srcArray = (duplicationAllowed) ? items : [...items]
+    for (let i = 0; i < size; i++) {
+        if (!duplicationAllowed && srcArray.length === 0) break
+        const randIdx = Math.floor(Math.random() * srcArray.length)
+        res.push(srcArray[randIdx])
+        if (!duplicationAllowed) srcArray.splice(randIdx, 1)
+    }
+    return (size === 1) ? res[0] : res
 }
 
 function saveToStorage(key, value) {
@@ -58,7 +73,7 @@ function getMonthName(date) {
     return monthNames[date.getMonth()]
 }
 
-function animateCSS(el, animation='bounce') {
+function animateCSS(el, animation = 'bounce') {
     const prefix = 'animate__'
     return new Promise((resolve, reject) => {
         const animationName = `${prefix}${animation}`
