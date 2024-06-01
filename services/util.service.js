@@ -5,9 +5,13 @@ export const utilService = {
     makeLorem,
     getRandomIntInclusive,
     getRandomItems,
+    getRandomColor,
     getDayName,
     getMonthName,
-    animateCSS
+    animateCSS,
+    rgbToHex,
+    deepEqual,
+    debounce
 }
 
 function makeId(length = 6) {
@@ -52,6 +56,16 @@ function getRandomItems(items, size = 1, duplicationAllowed = false) {
     return (size === 1) ? res[0] : res
 }
 
+function getRandomColor() {
+    const chars = '0123456789abcdef'
+    let color = '#'
+    for (let i = 0; i < 6; i++) {
+        color += chars[Math.floor(Math.random() * chars.length)]
+    }
+    return color
+}
+
+
 function saveToStorage(key, value) {
     localStorage.setItem(key, JSON.stringify(value))
 }
@@ -86,4 +100,42 @@ function animateCSS(el, animation = 'bounce') {
 
         el.addEventListener('animationend', handleAnimationEnd, { once: true })
     })
+}
+
+function rgbToHex(rgb) {
+    const result = rgb.match(/\d+/g)
+    return `#${((1 << 24) + (+result[0] << 16) + (+result[1] << 8) + +result[2]).toString(16).slice(1).toLowerCase()}`
+}
+
+function deepEqual(x, y) {
+    if (x === y) {
+        return true
+    }
+    else if ((typeof x == "object" && x != null) && (typeof y == "object" && y != null)) {
+        if (Object.keys(x).length != Object.keys(y).length)
+            return false
+
+        for (var prop in x) {
+            if (y.hasOwnProperty(prop)) {
+                if (!deepEqual(x[prop], y[prop]))
+                    return false
+            }
+            else
+                return false
+        }
+
+        return true
+    }
+    else
+        return false
+}
+
+function debounce(callback, wait) {
+    let timeoutId = null
+    return (...args) => {
+        window.clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(() => {
+            callback(...args)
+        }, wait)
+    }
 }
